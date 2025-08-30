@@ -2,23 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { moveTodo } from '@/lib/db';
 import { TodoColumn } from '@/store/todoStore';
 
-// Try both patterns for maximum compatibility
-type RouteContext = {
-  params: Promise<{ id: string }> | { id: string };
-};
-
-// Helper function to safely get params
-async function getParams(params: Promise<{ id: string }> | { id: string }) {
-  if (params instanceof Promise) {
-    return await params;
-  }
-  return params;
-}
-
 // PATCH /api/todos/[id]/move - Move a todo to a different column
-export async function PATCH(request: NextRequest, context: RouteContext) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = await getParams(context.params);
+    const { id } = await params;
     const body = await request.json();
     const { column } = body;
 
