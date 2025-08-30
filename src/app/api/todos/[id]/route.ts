@@ -1,24 +1,13 @@
-// /api/todos/[id]/route.ts - Vercel compatible version
 import { NextRequest, NextResponse } from 'next/server';
 import { updateTodo, deleteTodo } from '@/lib/db';
 
-// Try both patterns for maximum compatibility
-type RouteContext = {
-  params: Promise<{ id: string }> | { id: string };
-};
-
-// Helper function to safely get params
-async function getParams(params: Promise<{ id: string }> | { id: string }) {
-  if (params instanceof Promise) {
-    return await params;
-  }
-  return params;
-}
-
 // PUT /api/todos/[id] - Update a todo
-export async function PUT(request: NextRequest, context: RouteContext) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = await getParams(context.params);
+    const { id } = await params;
     const body = await request.json();
     const { title, description, column } = body;
 
@@ -46,9 +35,12 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 // DELETE /api/todos/[id] - Delete a todo
-export async function DELETE(request: NextRequest, context: RouteContext) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = await getParams(context.params);
+    const { id } = await params;
     
     const deleted = await deleteTodo(id);
 
