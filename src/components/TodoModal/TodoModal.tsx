@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   Modal,
@@ -12,10 +13,11 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from '@mui/material';
-import useTodoStore, { TodoItem, TodoColumn } from '@/store/todoStore';
+import { TodoItem, TodoColumn } from '@/store/todoStore';
+import { useCreateTodo, useUpdateTodo } from '@/hooks/useTodos';
 
 const style = {
-  position: 'absolute' as const,
+  position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
@@ -34,7 +36,8 @@ interface TodoModalProps {
 }
 
 const TodoModal: React.FC<TodoModalProps> = ({ open, onClose, editTodo }) => {
-  const { addTodo, updateTodo } = useTodoStore();
+  const createTodoMutation = useCreateTodo();
+  const updateTodoMutation = useUpdateTodo();
   
   const [formData, setFormData] = useState({
     id: '',
@@ -76,28 +79,34 @@ const TodoModal: React.FC<TodoModalProps> = ({ open, onClose, editTodo }) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.title.trim() || !formData.description.trim()) {
       return;
     }
 
-    if (editTodo) {
-      updateTodo(editTodo.id, {
-        title: formData.title,
-        description: formData.description,
-        column: formData.column,
-      });
-    } else {
-      addTodo({
-        title: formData.title,
-        description: formData.description,
-        column: formData.column,
-      });
+    try {
+      if (editTodo) {
+        await updateTodoMutation.mutateAsync({
+          id: editTodo.id,
+          updates: {
+            title: formData.title,
+            description: formData.description,
+            column: formData.column,
+          },
+        });
+      } else {
+        await createTodoMutation.mutateAsync({
+          title: formData.title,
+          description: formData.description,
+          column: formData.column,
+        });
+      }
+      handleClose();
+    } catch (error) {
+      console.error('Error saving todo:', error);
     }
-
-    handleClose();
   };
 
   const handleClose = () => {

@@ -5,6 +5,17 @@
   border: 1px solid #ccc;
   padding: 20px;
   border-radius: 10px;
+  width: 100%;
+  position: relative;
+}
+
+.todo-item-content {
+  cursor: grab;
+  flex: 1;
+}
+
+.todo-item-content:active {
+  cursor: grabbing;
 }
 
 .todo-item-buttons {
@@ -12,6 +23,8 @@
   gap: 5px;
   justify-content: flex-end;
   margin-top: 10px;
+  z-index: 10;
+  position: relative;
 }
 
 .todo-item-buttons button {
@@ -19,4 +32,11 @@
   background: transparent;
   cursor: pointer;
   color: gray;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.todo-item-buttons button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }

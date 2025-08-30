@@ -1,16 +1,27 @@
-"use client"
+'use client';
+
 import React from "react";
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import TodoColumn from "@/components/TodoColumn";
 import Header from "./Header";
 import DraggableTodoItem from "@/components/DraggableTodoItem/DraggableTodoItem";
 import TodoItem from "@/components/todoItem";
-import useTodoStore, { TodoColumn as TodoColumnType, TodoItem as TodoItemType } from "@/store/todoStore";
+import { TodoColumn as TodoColumnType, TodoItem as TodoItemType } from "@/store/todoStore";
+import { useTodos, useMoveTodo } from "@/hooks/useTodos";
 import "./homeStyles.css";
 
 export default function Home() {
-  const { todos, moveTodo, getTodosByColumn } = useTodoStore();
+  const { data: todos = [], isLoading } = useTodos();
+  const moveTodoMutation = useMoveTodo();
   const [activeTodo, setActiveTodo] = React.useState<TodoItemType | null>(null);
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   const todoColumns: { id: TodoColumnType; title: string }[] = [
     { id: 'todo', title: 'To Do' },
@@ -37,24 +48,28 @@ export default function Home() {
     // Check if dropped over a column
     const targetColumn = todoColumns.find(col => col.id === overId);
     if (targetColumn) {
-      moveTodo(activeId, targetColumn.id);
+      moveTodoMutation.mutate({ id: activeId, column: targetColumn.id });
       return;
     }
     
     // If dropped over another todo item, get the column of that item
     const targetTodo = todos.find(todo => todo.id === overId);
     if (targetTodo && targetTodo.column !== todos.find(todo => todo.id === activeId)?.column) {
-      moveTodo(activeId, targetTodo.column);
+      moveTodoMutation.mutate({ id: activeId, column: targetTodo.column });
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
       <Header />
-      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="todo-column-container">
           {todoColumns.map((column) => {
-            const columnTodos = getTodosByColumn(column.id);
+            const columnTodos = todos.filter(todo => todo.column === column.id);
             return (
               <TodoColumn
                 key={column.id}

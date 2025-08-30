@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 import SearchInput from "@/components/searchInput/SearchInput";
 import { Button } from "@mui/material";
 import React, { useState } from "react";

@@ -24,7 +24,7 @@ const TodoColumn: React.FC<TodoColumnProps> = ({ title, columnId, todos, childre
       <Typography align="center" variant="h5" component="h5">
         {title}
       </Typography>
-      <div className="container">
+      <div>
         <div className="todo-column" ref={setNodeRef}>
           <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
             {children}

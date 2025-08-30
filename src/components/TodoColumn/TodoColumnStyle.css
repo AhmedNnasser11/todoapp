@@ -5,11 +5,12 @@
   max-width: 500px;
   width: 100%;
   margin-top: 50px;
-
+  height: 100vh;
 }
 
 .todo-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
