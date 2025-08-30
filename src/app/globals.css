@@ -50,8 +50,7 @@ a {
 .todo-column-container {
   display: flex;
   gap: 20px;
-  width: 100%;
-  margin: auto 0;
-  justify-content: center;
-  height: 100%;
+  height: calc(100vh - 100px); /* Subtract approximate header height */
+  padding: 20px;
+  overflow-x: auto; /* Allow horizontal scroll if needed */
 }

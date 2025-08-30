@@ -4,13 +4,13 @@
       "id": "2",
       "title": "Setup database",
       "description": "Configure PostgreSQL database for the application",
-      "column": "done"
+      "column": "todo"
     },
     {
       "id": "4",
       "title": "User Authentication",
       "description": "Implement JWT-based authentication system",
-      "column": "done"
+      "column": "in-progress"
     },
     {
       "id": "5",

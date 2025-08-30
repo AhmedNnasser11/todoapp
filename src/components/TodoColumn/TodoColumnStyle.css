@@ -1,16 +1,23 @@
+/* Individual column wrapper */
 .todo-column-wrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 500px;
-  width: 100%;
-  margin-top: 50px;
-  height: 100vh;
+  min-width: 300px; /* Minimum width instead of max-width */
+  flex: 1; /* Allow columns to grow equally */
+  height: 100%; /* Take full height of container */
 }
 
+/* Column content area */
 .todo-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  flex: 1; /* Allow to grow and take remaining space */
+  overflow-y: auto; /* Scroll within individual columns */
+  padding: 10px;
+  border: 1px solid #e0e0e0; /* Optional: visual boundary */
+  border-radius: 8px;
+  height: 100vh;
 }
