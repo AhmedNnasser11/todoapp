@@ -1,12 +1,6 @@
 {
   "todos": [
     {
-      "id": "2",
-      "title": "Setup database",
-      "description": "Configure PostgreSQL database for the application",
-      "column": "todo"
-    },
-    {
       "id": "4",
       "title": "User Authentication",
       "description": "Implement JWT-based authentication system",
@@ -21,8 +15,20 @@
     {
       "title": "mmm",
       "description": "jjjj",
-      "column": "todo",
+      "column": "in-progress",
       "id": "1756552251393qmgoowj3b"
+    },
+    {
+      "title": "ffff",
+      "description": "fwefewfew",
+      "column": "todo",
+      "id": "17565607022954x9ccpmdj"
+    },
+    {
+      "title": "ffewfewfewfwe",
+      "description": "fewfwefwefwe",
+      "column": "todo",
+      "id": "1756560715118g00c6it7k"
     }
   ]
 }

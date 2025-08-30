@@ -1,44 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readTodos, addTodo } from '@/lib/db';
+import { moveTodo } from '@/lib/db';
+import { TodoColumn } from '@/store/todoStore';
 
-// GET /api/todos - Fetch all todos
-export async function GET() {
-  try {
-    const todos = await readTodos();
-    return NextResponse.json({ todos });
-  } catch (error) {
-    console.error('Error fetching todos:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch todos' },
-      { status: 500 }
-    );
-  }
+interface RouteParams {
+  params: Promise<{
+    id: string;
+  }>;
 }
 
-// POST /api/todos - Create a new todo
-export async function POST(request: NextRequest) {
+// PATCH /api/todos/[id]/move - Move a todo to a different column
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id } = await params; // Await the params Promise
     const body = await request.json();
-    const { title, description, column } = body;
+    const { column } = body;
 
-    if (!title || !description) {
+    if (!column || !['todo', 'in-progress', 'done'].includes(column)) {
       return NextResponse.json(
-        { error: 'Title and description are required' },
+        { error: 'Valid column is required (todo, in-progress, done)' },
         { status: 400 }
       );
     }
 
-    const newTodo = await addTodo({
-      title,
-      description,
-      column: column || 'todo',
-    });
+    const movedTodo = await moveTodo(id, column as TodoColumn);
 
-    return NextResponse.json({ todo: newTodo }, { status: 201 });
+    if (!movedTodo) {
+      return NextResponse.json(
+        { error: 'Todo not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ todo: movedTodo });
   } catch (error) {
-    console.error('Error creating todo:', error);
+    console.error('Error moving todo:', error);
     return NextResponse.json(
-      { error: 'Failed to create todo' },
+      { error: 'Failed to move todo' },
       { status: 500 }
     );
   }
