@@ -1,10 +1,24 @@
+// /api/todos/route.ts (with search filter added)
 import { NextRequest, NextResponse } from 'next/server';
 import { readTodos, addTodo } from '@/lib/db';
 
-// GET /api/todos - Fetch all todos
-export async function GET() {
+// GET /api/todos - Fetch all todos with optional search filter
+export async function GET(request: NextRequest) {
   try {
-    const todos = await readTodos();
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search');
+    
+    let todos = await readTodos();
+    
+    // Filter todos if search parameter is provided
+    if (search) {
+      const searchLower = search.toLowerCase();
+      todos = todos.filter(todo => 
+        todo.title.toLowerCase().includes(searchLower) ||
+        todo.description.toLowerCase().includes(searchLower)
+      );
+    }
+    
     return NextResponse.json({ todos });
   } catch (error) {
     console.error('Error fetching todos:', error);

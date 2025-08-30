@@ -1,41 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { moveTodo } from '@/lib/db';
-import { TodoColumn } from '@/store/todoStore';
+import { readTodos, addTodo } from '@/lib/db';
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
+// GET /api/todos - Fetch all todos
+export async function GET() {
+  try {
+    const todos = await readTodos();
+    return NextResponse.json({ todos });
+  } catch (error) {
+    console.error('Error fetching todos:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch todos' },
+      { status: 500 }
+    );
+  }
 }
 
-// PATCH /api/todos/[id]/move - Move a todo to a different column
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+// POST /api/todos - Create a new todo
+export async function POST(request: NextRequest) {
   try {
-    const { id } = params;
     const body = await request.json();
-    const { column } = body;
+    const { title, description, column } = body;
 
-    if (!column || !['todo', 'in-progress', 'done'].includes(column)) {
+    if (!title || !description) {
       return NextResponse.json(
-        { error: 'Valid column is required (todo, in-progress, done)' },
+        { error: 'Title and description are required' },
         { status: 400 }
       );
     }
 
-    const movedTodo = await moveTodo(id, column as TodoColumn);
+    const newTodo = await addTodo({
+      title,
+      description,
+      column: column || 'todo',
+    });
 
-    if (!movedTodo) {
-      return NextResponse.json(
-        { error: 'Todo not found' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ todo: movedTodo });
+    return NextResponse.json({ todo: newTodo }, { status: 201 });
   } catch (error) {
-    console.error('Error moving todo:', error);
+    console.error('Error creating todo:', error);
     return NextResponse.json(
-      { error: 'Failed to move todo' },
+      { error: 'Failed to create todo' },
       { status: 500 }
     );
   }
