@@ -1,0 +1,25 @@
+.search-input-component-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: black;
+  width: 100%;
+}
+
+.search-icon {
+  color: #ccc;
+}

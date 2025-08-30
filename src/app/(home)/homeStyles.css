@@ -1,0 +1,11 @@
+.home-header {
+  padding: 20px 0 ;
+  border-bottom: 1px solid #DDD;
+}
+
+.home-header .home-inputs-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
